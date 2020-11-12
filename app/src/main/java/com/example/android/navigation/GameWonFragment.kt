@@ -33,7 +33,7 @@ import androidx.navigation.findNavController
 import com.example.android.navigation.databinding.FragmentGameWonBinding
 import android.content.pm.ResolveInfo
 import android.content.pm.PackageManager
-
+import android.widget.Toast.makeText
 
 
 class GameWonFragment : Fragment() {
@@ -45,8 +45,12 @@ class GameWonFragment : Fragment() {
         binding.nextMatchButton.setOnClickListener { view: View ->
             // TODO (10) Replace action ID with actionGameWonFragmentToGameFragment
             // From GameWonFragmentDirections
-            view.findNavController().navigate(R.id.action_gameWonFragment_to_gameFragment)
+            view.findNavController().navigate(GameWonFragmentDirections.actionGameWonFragmentToGameFragment())
         }
+       // var args = arguments?.let { GameWonFragmentArgs.fromBundle(it) }
+        val args = GameWonFragmentArgs.fromBundle(requireArguments())
+        Toast.makeText(context, "NumCorrect: ${args.numCorrect}, NumQuestions: ${args.numQuestions}",
+            Toast.LENGTH_LONG).show()
         // TODO (08) Add and show toast to get the GameWonFragmentArgs from the arguments Bundle
         // "NumCorrect: ${args.numCorrect}, NumQuestions: ${args.numQuestions}"
         return binding.root
