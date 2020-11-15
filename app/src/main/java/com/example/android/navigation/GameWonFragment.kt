@@ -16,6 +16,7 @@
 
 package com.example.android.navigation
 
+import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import androidx.databinding.DataBindingUtil
@@ -46,15 +47,44 @@ class GameWonFragment : Fragment() {
             view.findNavController().navigate(
                     GameWonFragmentDirections.actionGameWonFragmentToGameFragment())
         }
-        var args = GameWonFragmentArgs.fromBundle(requireArguments())
-        Toast.makeText(context,
-                "NumCorrect: ${args.numCorrect}, NumQuestions: ${args.numQuestions}",
-                Toast.LENGTH_LONG).show()
-        // TODO (01) Add setHasOptionsMenu(true)
+
+        setHasOptionsMenu(true)
         // This allows onCreateOptionsMenu to be called
         return binding.root
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.winner_menu, menu)
+
+        if(null == getSharedIntent().resolveActivity(activity!!.packageManager)) {
+            menu.findItem(R.id.share).isVisible = false
+        }
+    }
+
+    private fun getSharedIntent() : Intent {
+        var args = GameWonFragmentArgs.fromBundle(requireArguments())
+//        val shareIntent = Intent(Intent.ACTION_SEND)
+//        shareIntent.setType("text/plain")
+//                .putExtra(Intent.EXTRA_TEXT,
+//                getString(R.string.share_success_text, args.numCorrect, args.numQuestions))
+
+        return ShareCompat.IntentBuilder.from(activity!!)
+                .setText(getString(R.string.share_success_text, args.numCorrect, args.numQuestions))
+                .setType("text/plain")
+                .intent
+    }
+
+    private fun shareSuccess() {
+        startActivity(getSharedIntent())
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.share -> shareSuccess()
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
     // TODO (02) Create getShareIntent method
     // TODO (03) Create shareSuccess method
